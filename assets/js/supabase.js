@@ -6,6 +6,11 @@ window.BERITA_CUAN_SUPABASE = Object.freeze({
     whatsappNumber: '6281357441144'
 });
 
+window.BERITA_CUAN_ADSENSE = Object.freeze({
+    clientId: '',
+    slotId: ''
+});
+
 window.BERITA_CUAN_API = Object.freeze({
     isConfigured() {
         return Boolean(window.BERITA_CUAN_SUPABASE.url && window.BERITA_CUAN_SUPABASE.anonKey);

@@ -50,9 +50,12 @@ create table if not exists public.posts (
   content text not null,
   category text not null check (category in ('pilihan', 'politik', 'crypto', 'meme', 'meme_politik')),
   thumbnail_url text,
+  meta_description text,
   created_at timestamptz not null default now(),
   views bigint not null default 0 check (views >= 0)
 );
+
+alter table public.posts add column if not exists meta_description text;
 
 create table if not exists public.digital_products (
   id uuid primary key default gen_random_uuid(),
@@ -80,6 +83,25 @@ alter table public.profiles enable row level security;
 alter table public.posts enable row level security;
 alter table public.digital_products enable row level security;
 alter table public.faqs enable row level security;
+
+insert into storage.buckets (id, name, public, file_size_limit)
+values ('berita-cuan', 'berita-cuan', true, 52428800)
+on conflict (id) do update
+set public = excluded.public, file_size_limit = excluded.file_size_limit;
+
+drop policy if exists "Public can read berita cuan uploads" on storage.objects;
+create policy "Public can read berita cuan uploads" on storage.objects
+  for select to anon, authenticated using (bucket_id = 'berita-cuan');
+drop policy if exists "Admins can upload berita cuan files" on storage.objects;
+create policy "Admins can upload berita cuan files" on storage.objects
+  for insert to authenticated with check (bucket_id = 'berita-cuan' and (select public.is_admin()));
+drop policy if exists "Admins can update berita cuan files" on storage.objects;
+create policy "Admins can update berita cuan files" on storage.objects
+  for update to authenticated using (bucket_id = 'berita-cuan' and (select public.is_admin()))
+  with check (bucket_id = 'berita-cuan' and (select public.is_admin()));
+drop policy if exists "Admins can delete berita cuan files" on storage.objects;
+create policy "Admins can delete berita cuan files" on storage.objects
+  for delete to authenticated using (bucket_id = 'berita-cuan' and (select public.is_admin()));
 
 drop policy if exists "Users can read own profile" on public.profiles;
 create policy "Users can read own profile" on public.profiles

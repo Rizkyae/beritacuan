@@ -41,6 +41,44 @@
         sessionStorage.removeItem(sessionKey);
     };
 
+    const uploadFile = async (file, folder) => {
+        const allowedExtensions = folder === 'images'
+            ? ['jpg', 'jpeg', 'png', 'webp', 'gif']
+            : ['pdf', 'zip', 'epub', 'docx', 'xlsx', 'pptx', 'csv', 'txt'];
+        const maxSize = folder === 'images' ? 5 * 1024 * 1024 : 50 * 1024 * 1024;
+        const extension = file.name.split('.').pop()?.toLowerCase() || '';
+        if (!allowedExtensions.includes(extension)) {
+            throw new Error(folder === 'images'
+                ? 'Format gambar harus JPG, PNG, WebP, atau GIF.'
+                : 'Format file harus PDF, ZIP, EPUB, DOCX, XLSX, PPTX, CSV, atau TXT.');
+        }
+        if (file.size > maxSize) {
+            throw new Error(`Ukuran file maksimal ${folder === 'images' ? '5 MB' : '50 MB'}.`);
+        }
+        if (folder === 'images' && !['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
+            throw new Error('Tipe file gambar tidak valid.');
+        }
+
+        const safeName = file.name.normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/^-|-$/g, '');
+        const path = `${folder}/${crypto.randomUUID()}-${safeName}`;
+        const response = await fetch(`${config.url.replace(/\/+$/, '')}/storage/v1/object/berita-cuan/${path.split('/').map(encodeURIComponent).join('/')}`, {
+            method: 'POST',
+            headers: {
+                apikey: config.anonKey,
+                Authorization: `Bearer ${getToken()}`,
+                'Content-Type': file.type || 'application/octet-stream',
+                'x-upsert': 'false'
+            },
+            body: file
+        });
+        const result = await response.json().catch(() => null);
+        if (!response.ok) {
+            throw new Error(result?.message || result?.error || `Upload gagal (HTTP ${response.status}). Pastikan bucket Storage berita-cuan sudah disiapkan.`);
+        }
+        return `${config.url.replace(/\/+$/, '')}/storage/v1/object/public/berita-cuan/${path.split('/').map(encodeURIComponent).join('/')}`;
+    };
+
     const authRequest = async (path, payload = null, token = '') => {
         if (!config.url || !config.anonKey) {
             throw new Error('Konfigurasi Supabase belum lengkap. Periksa assets/js/supabase.js.');
@@ -171,6 +209,8 @@
                 <div class="field"><label for="slug">Slug (opsional)</label><input id="slug" name="slug" value="${escapeHTML(post.slug || '')}" pattern="[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*"></div>
                 <div class="field"><label for="category">Kategori</label><select id="category" name="category">${categories.map((category) => `<option value="${category}" ${post.category === category ? 'selected' : ''}>${categoryNames[category]}</option>`).join('')}</select></div>
                 <div class="field"><label for="thumbnail_url">URL gambar</label><input id="thumbnail_url" name="thumbnail_url" type="url" value="${escapeHTML(post.thumbnail_url || '')}"></div>
+                <div class="field"><label for="thumbnail_file">Unggah gambar (maks. 5 MB)</label><input id="thumbnail_file" name="thumbnail_file" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></div>
+                <div class="field full"><label for="meta_description">Deskripsi pencarian Google (opsional)</label><textarea id="meta_description" name="meta_description" maxlength="300" placeholder="Ringkasan berita untuk hasil pencarian Google">${escapeHTML(post.meta_description || '')}</textarea></div>
                 <div class="field full"><label for="content">Isi berita</label><textarea id="content" name="content" required>${escapeHTML(post.content || '')}</textarea></div>
             </div><button class="button button-dark" type="submit">${post.id ? 'Simpan perubahan' : 'Terbitkan berita'}</button>
             ${post.id ? '<a class="button" href="manage-posts.html">Batal</a>' : ''}
@@ -225,8 +265,10 @@
                     <div class="form-grid">
                         <div class="field"><label for="name">Nama produk</label><input id="name" name="name" required maxlength="250" value="${escapeHTML(product.name || '')}"></div>
                         <div class="field"><label for="price">Harga (IDR)</label><input id="price" name="price" type="number" min="0" step="1" required value="${escapeHTML(product.price ?? '')}"></div>
-                        <div class="field"><label for="file_url">URL pembelian/file</label><input id="file_url" name="file_url" type="url" value="${escapeHTML(product.file_url || '')}"></div>
+                        <div class="field"><label for="file_url">URL pembelian/file (opsional)</label><input id="file_url" name="file_url" type="url" value="${escapeHTML(product.file_url || '')}"></div>
+                        <div class="field"><label for="product_file">Unggah file produk (maks. 50 MB)</label><input id="product_file" name="product_file" type="file" accept=".pdf,.zip,.epub,.docx,.xlsx,.pptx,.csv,.txt"></div>
                         <div class="field"><label for="thumbnail_url">URL thumbnail</label><input id="thumbnail_url" name="thumbnail_url" type="url" value="${escapeHTML(product.thumbnail_url || '')}"></div>
+                        <div class="field"><label for="thumbnail_file">Unggah thumbnail (maks. 5 MB)</label><input id="thumbnail_file" name="thumbnail_file" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></div>
                         <div class="field full"><label for="description">Deskripsi</label><textarea id="description" name="description">${escapeHTML(product.description || '')}</textarea></div>
                     </div><button class="button button-dark" type="submit">${product.id ? 'Simpan perubahan' : 'Tambah produk'}</button>
                     ${product.id ? '<a class="button" href="manage-products.html">Batal</a>' : ''}
@@ -291,7 +333,15 @@
             const thumbnail = String(fields.get('thumbnail_url') || '').trim();
             if (!categories.includes(category) || !slug) throw new Error('Kategori dan slug harus valid.');
             if (thumbnail && !/^https?:\/\//i.test(thumbnail)) throw new Error('URL gambar harus diawali http:// atau https://.');
-            return { title, slug, content: String(fields.get('content') || '').trim(), category, thumbnail_url: thumbnail || null };
+            const metaDescription = String(fields.get('meta_description') || '').trim();
+            return {
+                title,
+                slug,
+                content: String(fields.get('content') || '').trim(),
+                category,
+                thumbnail_url: thumbnail || null,
+                meta_description: metaDescription || null
+            };
         }
         if (table === 'digital_products') {
             const price = Number(fields.get('price'));
@@ -323,9 +373,26 @@
         event.preventDefault();
         const submit = form.querySelector('button[type="submit"]');
         submit.disabled = true;
+        const uploads = [];
         try {
             const table = form.dataset.recordForm;
             const body = collectData(form);
+            const fields = new FormData(form);
+            const postImage = table === 'posts' ? fields.get('thumbnail_file') : null;
+            const productFile = fields.get('product_file');
+            const productImage = table === 'digital_products' ? fields.get('thumbnail_file') : null;
+            if (postImage instanceof File && postImage.size) {
+                body.thumbnail_url = await uploadFile(postImage, 'images');
+                uploads.push(body.thumbnail_url);
+            }
+            if (productFile instanceof File && productFile.size) {
+                body.file_url = await uploadFile(productFile, 'products');
+                uploads.push(body.file_url);
+            }
+            if (productImage instanceof File && productImage.size) {
+                body.thumbnail_url = await uploadFile(productImage, 'images');
+                uploads.push(body.thumbnail_url);
+            }
             const id = form.dataset.id;
             await request(table, {
                 method: id ? 'PATCH' : 'POST',
@@ -334,6 +401,24 @@
             });
             window.location.href = table === 'posts' ? 'manage-posts.html' : table === 'digital_products' ? 'manage-products.html' : 'manage-faqs.html';
         } catch (error) {
+            for (const publicUrl of uploads) {
+                const path = publicUrl.split('/storage/v1/object/public/berita-cuan/')[1];
+                if (!path) continue;
+                try {
+                    const response = await fetch(`${config.url.replace(/\/+$/, '')}/storage/v1/object/berita-cuan`, {
+                        method: 'DELETE',
+                        headers: {
+                            apikey: config.anonKey,
+                            Authorization: `Bearer ${getToken()}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ prefixes: [decodeURIComponent(path)] })
+                    });
+                    if (!response.ok) console.warn('Unggahan sementara tidak dapat dibersihkan:', response.status);
+                } catch (cleanupError) {
+                    console.warn('Unggahan sementara tidak dapat dibersihkan:', cleanupError);
+                }
+            }
             message(error.message);
             submit.disabled = false;
         }

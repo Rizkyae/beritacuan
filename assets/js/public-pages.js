@@ -52,6 +52,52 @@
         if (target) target.innerHTML = `<div class="empty-state">${escapeHTML(message)}</div>`;
     };
     const postUrl = (post) => `berita.html?slug=${encodeURIComponent(post.slug || '')}`;
+    const setMeta = (selector, attribute, value) => {
+        let element = document.head.querySelector(selector);
+        if (!element) {
+            element = document.createElement(selector.startsWith('link') ? 'link' : 'meta');
+            if (selector.startsWith('meta[property=')) element.setAttribute('property', selector.match(/property="([^"]+)"/)[1]);
+            else if (selector.startsWith('meta[name=')) element.setAttribute('name', selector.match(/name="([^"]+)"/)[1]);
+            document.head.append(element);
+        }
+        element.setAttribute(attribute, value);
+    };
+
+    const setArticleMetadata = (post) => {
+        const description = String(post.meta_description || excerpt(post.content, 160));
+        const canonical = new URL(postUrl(post), window.location.href).href;
+        const image = safeLink(post.thumbnail_url);
+        document.title = `${post.title} — BERITA CUAN`;
+        setMeta('meta[name="description"]', 'content', description);
+        setMeta('meta[property="og:type"]', 'content', 'article');
+        setMeta('meta[property="og:title"]', 'content', document.title);
+        setMeta('meta[property="og:description"]', 'content', description);
+        setMeta('meta[property="og:url"]', 'content', canonical);
+        if (image) setMeta('meta[property="og:image"]', 'content', image);
+        setMeta('meta[name="twitter:card"]', 'content', image ? 'summary_large_image' : 'summary');
+        setMeta('meta[name="twitter:title"]', 'content', document.title);
+        setMeta('meta[name="twitter:description"]', 'content', description);
+        setMeta('link[rel="canonical"]', 'href', canonical);
+        let structuredData = document.querySelector('[data-article-schema]');
+        if (!structuredData) {
+            structuredData = document.createElement('script');
+            structuredData.type = 'application/ld+json';
+            structuredData.dataset.articleSchema = '';
+            document.head.append(structuredData);
+        }
+        structuredData.textContent = JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'NewsArticle',
+            headline: post.title,
+            description,
+            datePublished: post.created_at,
+            dateModified: post.created_at,
+            mainEntityOfPage: canonical,
+            ...(image ? { image: [image] } : {}),
+            author: { '@type': 'Organization', name: 'BERITA CUAN' },
+            publisher: { '@type': 'Organization', name: 'BERITA CUAN', url: 'https://beritacuan.my.id/' }
+        });
+    };
 
     const renderPostCard = (post) => `
         <article class="news-card">
@@ -168,7 +214,7 @@
                 } catch (error) {
                     console.error('Penghitung views gagal:', error);
                 }
-                document.title = `${post.title} — BERITA CUAN`;
+                setArticleMetadata(post);
                 article.innerHTML = `<a class="category-pill" href="berita.html?kategori=${encodeURIComponent(post.category)}">${escapeHTML(label(post.category))}</a>
                     <h1>${escapeHTML(post.title)}</h1>
                     <div class="article-meta">${escapeHTML(dateLabel(post.created_at))} · ${escapeHTML(readTime(post.content))} · ${Number(post.views || 0).toLocaleString('id-ID')} dibaca</div>

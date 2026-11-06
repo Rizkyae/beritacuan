@@ -22,6 +22,15 @@ schema.sql                                      Tabel, RLS, dan fungsi Supabase
 3. Unggah file proyek ke hosting statis atau letakkan di document root Laragon/XAMPP. Buka alamat folder proyek; halaman awal adalah `index.html`. Jangan membuka file lewat `file://`, karena browser membatasi request API lintas-origin.
 4. Aktifkan domain website pada aturan API/CORS Supabase jika konfigurasi project Anda membatasi origin.
 
+Menjalankan `schema.sql` juga membuat bucket publik `berita-cuan` dan kebijakan upload khusus admin. File gambar dibatasi 5 MB (JPG, PNG, WebP, GIF); file produk dibatasi 50 MB (PDF, ZIP, EPUB, DOCX, XLSX, PPTX, CSV, TXT). Formulir admin tetap menerima URL lama; bila file diunggah, unggahan akan menggantikan URL pada kolom terkait. File produk pada bucket publik dapat diakses melalui URL-nya, jadi jangan unggah materi yang harus dirahasiakan atau hanya boleh diakses setelah pembayaran.
+
+## SEO, Google Search, dan AdSense
+
+- Halaman publik menyediakan judul/deskripsi, canonical URL, Open Graph, dan sitemap statis. Artikel memakai judul, deskripsi SEO (atau cuplikan isi), canonical URL, dan structured data `NewsArticle` yang diisi saat artikel dimuat. Isi artikel berasal dari Supabase dan dirender di browser; pengindeksan halaman artikel bergantung pada Google yang menjalankan JavaScript.
+- Pastikan domain produksi benar. Jika domain berbeda dari `https://beritacuan.my.id`, perbarui URL di halaman publik, `robots.txt`, dan `sitemap.xml`.
+- Tambahkan properti domain di Google Search Console, verifikasi kepemilikan, lalu kirim `https://beritacuan.my.id/sitemap.xml`. Search Console memantau pengindeksan dan performa pencarian; Google menentukan judul/cuplikannya sendiri dan tidak menjamin posisi atau tampilan hasil tertentu.
+- Untuk menayangkan iklan, terima situs di Google AdSense lalu isi `clientId` (`ca-pub-...`) dan `slotId` (ID unit iklan) di `assets/js/supabase.js`. Iklan tidak dimuat sebelum kedua ID valid. Penayangan tetap bergantung pada persetujuan Google dan kebijakan AdSense.
+
 Anon/publishable key memang digunakan di browser. Jangan pernah mengisi `service_role` key; akses publik dibatasi oleh Row Level Security pada `schema.sql`.
 
 ## Panel admin (opsional)
