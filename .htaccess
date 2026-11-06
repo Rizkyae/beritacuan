@@ -1,1 +1,4 @@
+RewriteEngine On
+RewriteRule ^admin/login\.php$ admin/login.html [R=302,L]
+
 DirectoryIndex index.html
