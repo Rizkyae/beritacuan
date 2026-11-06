@@ -1,9 +1,9 @@
 // Isi dengan Project URL dan anon/publishable key Supabase Anda.
 // Jangan pernah meletakkan service_role key di file frontend.
 window.BERITA_CUAN_SUPABASE = Object.freeze({
-    url: '',
-    anonKey: '',
-    whatsappNumber: ''
+    url: 'https://kixjhtlakxrqzowpkhgs.supabase.co',
+    anonKey: 'sb_publishable_Zhcee5LNtx4hZ8SZX2rT5w_Xr7qmx3w',
+    whatsappNumber: '6281357441144'
 });
 
 window.BERITA_CUAN_API = Object.freeze({
