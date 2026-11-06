@@ -1,0 +1,4 @@
+.search-panel[hidden] { display: none; }
+.product-card > img { width: 100%; height: 170px; object-fit: cover; border-radius: 10px; }
+.product-card > div[style*="height:170px"] img { width: 100%; height: 100%; object-fit: cover; }
+.product-card .button[aria-disabled="true"] { opacity: .7; cursor: not-allowed; }

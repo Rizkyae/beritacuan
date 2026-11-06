@@ -34,22 +34,22 @@ $activePage = $activePage ?? '';
             <a href="<?= e(url('#tentang')) ?>">Tentang Kami</a>
             <div class="nav-dropdown">
                 <button type="button" class="nav-dropdown-toggle" aria-expanded="false" data-dropdown-toggle>Produk <span>⌄</span></button>
-                <div class="nav-dropdown-menu"><a href="<?= e(url('produk.php')) ?>">Produk Digital</a></div>
+                <div class="nav-dropdown-menu"><a href="<?= e(url('produk.html')) ?>">Produk Digital</a></div>
             </div>
             <div class="nav-dropdown">
                 <button type="button" class="nav-dropdown-toggle" aria-expanded="false" data-dropdown-toggle>Kategori Berita <span>⌄</span></button>
                 <div class="nav-dropdown-menu category-menu">
                     <?php foreach (['pilihan' => 'Berita Pilihan', 'politik' => 'Politik', 'crypto' => 'Crypto', 'meme' => 'Meme', 'meme_politik' => 'Meme Politik'] as $category => $label): ?>
-                        <a href="<?= e(url('berita.php?kategori=' . $category)) ?>"><?= e($label) ?></a>
+                        <a href="<?= e(url('berita.html?kategori=' . $category)) ?>"><?= e($label) ?></a>
                     <?php endforeach; ?>
                 </div>
             </div>
-            <a href="<?= e(url('faq.php')) ?>">FAQ</a>
+            <a href="<?= e(url('faq.html')) ?>">FAQ</a>
             <button type="button" class="icon-button" aria-label="Cari berita" data-search-toggle>⌕</button>
             <button type="button" class="icon-button" aria-label="Ganti tema" data-theme-toggle>◐</button>
         </nav>
     </div>
-    <form class="search-panel container" action="<?= e(url('berita.php')) ?>" method="get" data-search-panel hidden>
+    <form class="search-panel container" action="<?= e(url('berita.html')) ?>" method="get" data-search-panel hidden>
         <input type="search" name="q" placeholder="Cari berita..." aria-label="Cari berita">
         <button class="button button-dark" type="submit">Cari</button>
     </form>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="BERITA CUAN — berita pilihan tentang pasar, politik, dan kultur internet.">
+    <title>Berita pilihan hari ini — BERITA CUAN</title>
+    <script>
+        (() => {
+            try {
+                const saved = localStorage.getItem('bc-theme');
+                document.documentElement.dataset.theme = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            } catch {
+                document.documentElement.dataset.theme = 'light';
+            }
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="assets/css/site.css">
+    <script defer src="assets/js/supabase.js"></script>
+    <script defer src="assets/js/site.js"></script>
+    <script defer src="assets/js/public-pages.js"></script>
+    <script defer src="assets/js/app.js"></script>
+</head>
+<body data-page="home">
+<div id="site-header"></div>
+<main>
+    <section class="hero container">
+        <span class="hero-kicker">Informasi, tanpa noise</span>
+        <h1>Berita yang bikin<br><span>makin cuan.</span></h1>
+        <p class="hero-copy">Perspektif segar tentang pasar, politik, dan kultur internet. Ringkas, relevan, dan tetap punya konteks.</p>
+        <div class="hero-bottom"><a class="button button-dark" href="berita.html">Jelajahi berita <span>↗</span></a><a class="text-link" href="#tentang">Kenali BERITA CUAN ↓</a></div>
+        <div class="hero-grid" data-home-feature><div class="empty-state">Memuat berita pilihan...</div></div>
+    </section>
+    <section class="market-strip" aria-label="Informasi pasar">
+        <div class="container market-row"><span class="market-label">MARKET WATCH</span><span class="ticker-item">BTC <b>Harga feed belum terhubung</b></span><span class="ticker-item">ETH <b>Harga feed belum terhubung</b></span><span class="ticker-item">Informasi pasar untuk edukasi, bukan saran investasi.</span></div>
+    </section>
+    <section class="section container">
+        <div class="section-heading"><div><span class="section-kicker">Pasar & aset digital</span><h2>Crypto, dibaca dengan konteks.</h2></div><a class="text-link" href="berita.html?kategori=crypto">Semua update →</a></div>
+        <div class="news-grid" data-home-crypto><div class="empty-state">Memuat berita crypto...</div></div>
+    </section>
+    <section class="section container">
+        <div class="section-heading"><div><span class="section-kicker">Lugas dan berimbang</span><h2>Politik tanpa basi.</h2></div><a class="text-link" href="berita.html?kategori=politik">Baca berita politik →</a></div>
+        <div class="news-grid" data-home-politics><div class="empty-state">Memuat berita politik...</div></div>
+    </section>
+    <section class="section container">
+        <div class="section-heading"><div><span class="section-kicker">Internet culture</span><h2>Meme & meme politik.</h2></div><a class="text-link" href="berita.html?kategori=meme">Lihat semua meme →</a></div>
+        <div class="meme-grid" data-home-memes><div class="empty-state">Memuat meme...</div></div>
+    </section>
+    <section class="section container">
+        <div class="section-heading"><div><span class="section-kicker">Belajar & berkarya</span><h2>Produk digital pilihan.</h2></div><a class="text-link" href="produk.html">Semua produk →</a></div>
+        <div class="product-grid" data-home-products><div class="empty-state">Memuat produk...</div></div>
+    </section>
+    <section class="section container">
+        <div class="section-heading"><div><span class="section-kicker">Yang sering ditanyakan</span><h2>FAQ.</h2></div><a class="text-link" href="faq.html">Lihat semua →</a></div>
+        <div class="faq-list" data-home-faqs><div class="empty-state">Memuat FAQ...</div></div>
+    </section>
+    <section class="container section" id="tentang"><div class="about-band"><div><span class="section-kicker">Tentang kami</span><h2>Informasi lebih jernih, keputusan lebih cerdas.</h2><p>BERITA CUAN adalah portal independen yang merangkum isu pilihan seputar pasar, politik, dan budaya digital secara lugas. Konten kami bukan nasihat investasi.</p></div><a class="button button-dark" href="faq.html">Kenali kami →</a></div></section>
+</main>
+<div id="site-footer"></div>
+</body>
+</html>

@@ -34,27 +34,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    document.querySelectorAll('[data-faq-button]').forEach((button) => {
-        button.addEventListener('click', () => {
+    document.addEventListener('click', (event) => {
+        if (!(event.target instanceof Element)) return;
+        const button = event.target.closest('[data-faq-button]');
+        if (button) {
             const answer = document.getElementById(button.getAttribute('aria-controls'));
             const expanded = button.getAttribute('aria-expanded') === 'true';
             button.setAttribute('aria-expanded', String(!expanded));
             answer.hidden = expanded;
             button.querySelector('[data-faq-icon]').textContent = expanded ? '+' : '−';
-        });
-    });
+            return;
+        }
 
-    document.querySelectorAll('[data-reaction]').forEach((button) => {
-        const key = `bc-like-${button.dataset.reaction}`;
-        const count = button.querySelector('[data-reaction-count]');
-        let likes = Number(localStorage.getItem(key) || 0);
-        count.textContent = String(Number(button.dataset.likes || 0) + likes);
-        button.setAttribute('aria-pressed', String(likes > 0));
-        button.addEventListener('click', () => {
-            likes = likes ? 0 : 1;
-            localStorage.setItem(key, String(likes));
-            count.textContent = String(Number(button.dataset.likes || 0) + likes);
-            button.setAttribute('aria-pressed', String(likes > 0));
-        });
+        const reactionButton = event.target.closest('[data-reaction]');
+        if (!reactionButton) return;
+        const likeButton = reactionButton;
+        const key = `bc-like-${likeButton.dataset.reaction}`;
+        const count = likeButton.querySelector('[data-reaction-count]');
+        let likes = 0;
+        try {
+            likes = Number(localStorage.getItem(key) || 0);
+        } catch {
+            likes = 0;
+        }
+        count.textContent = String(Number(likeButton.dataset.likes || 0) + likes);
+        likeButton.setAttribute('aria-pressed', String(likes > 0));
+        const nextLikes = likes ? 0 : 1;
+        try {
+            localStorage.setItem(key, String(nextLikes));
+        } catch {
+            return;
+        }
+        count.textContent = String(Number(likeButton.dataset.likes || 0) + nextLikes);
+        likeButton.setAttribute('aria-pressed', String(nextLikes > 0));
     });
 });

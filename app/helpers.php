@@ -79,11 +79,6 @@ function money(mixed $amount): string
     return 'Rp ' . number_format((float) $amount, 0, ',', '.');
 }
 
-function read_time(mixed $content): string
-{
-    return max(1, (int) ceil(str_word_count(strip_tags((string) $content)) / 220)) . ' menit baca';
-}
-
 function category_label(string $category): string
 {
     return match ($category) {
@@ -94,26 +89,4 @@ function category_label(string $category): string
         'meme_politik' => 'Meme Politik',
         default => ucfirst(str_replace('_', ' ', $category)),
     };
-}
-
-function render_post_card(array $post, bool $compact = false): void
-{
-    $href = url('berita.php?slug=' . rawurlencode((string) ($post['slug'] ?? '')));
-    ?>
-    <article class="news-card <?= $compact ? 'news-card-compact' : '' ?>">
-        <a class="news-card-image" href="<?= e($href) ?>">
-            <?php if (!empty($post['thumbnail_url'])): ?>
-                <img src="<?= e($post['thumbnail_url']) ?>" alt="" loading="lazy">
-            <?php else: ?>
-                <div class="image-fallback"><?= e(category_label((string) ($post['category'] ?? 'berita'))) ?></div>
-            <?php endif; ?>
-        </a>
-        <div class="news-card-body">
-            <div class="eyebrow-row"><span class="category-pill"><?= e(category_label((string) ($post['category'] ?? 'berita'))) ?></span><span><?= e(read_time($post['content'] ?? '')) ?></span></div>
-            <h3><a href="<?= e($href) ?>"><?= e($post['title'] ?? '') ?></a></h3>
-            <p><?= e(mb_strimwidth(trim(strip_tags((string) ($post['content'] ?? ''))), 0, 130, '…', 'UTF-8')) ?></p>
-            <div class="card-meta"><span><?= e(date('d M Y', strtotime((string) ($post['created_at'] ?? 'now')))) ?></span><span><?= number_format((int) ($post['views'] ?? 0)) ?> dibaca</span></div>
-        </div>
-    </article>
-    <?php
 }
