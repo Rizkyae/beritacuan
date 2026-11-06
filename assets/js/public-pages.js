@@ -95,7 +95,7 @@
             mainEntityOfPage: canonical,
             ...(image ? { image: [image] } : {}),
             author: { '@type': 'Organization', name: 'BERITA CUAN' },
-            publisher: { '@type': 'Organization', name: 'BERITA CUAN', url: 'https://beritacuan.my.id/' }
+            publisher: { '@type': 'Organization', name: 'BERITA CUAN', url: 'https://www.beritacuan.my.id/' }
         });
     };
 

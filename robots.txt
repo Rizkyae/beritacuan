@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://beritacuan.my.id/sitemap.xml
+Sitemap: https://www.beritacuan.my.id/sitemap.xml
