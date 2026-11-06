@@ -7,7 +7,7 @@ window.BERITA_CUAN_SUPABASE = Object.freeze({
 });
 
 window.BERITA_CUAN_ADSENSE = Object.freeze({
-    clientId: '',
+    clientId: 'ca-pub-7554807895186246',
     slotId: ''
 });
 

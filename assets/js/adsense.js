@@ -1,7 +1,7 @@
 (() => {
     const config = window.BERITA_CUAN_ADSENSE;
-    if (!config || !config.clientId || !config.slotId) return;
-    if (!/^ca-pub-\d+$/.test(config.clientId) || !/^\d+$/.test(config.slotId)) {
+    if (!config || !config.clientId) return;
+    if (!/^ca-pub-\d+$/.test(config.clientId) || (config.slotId && !/^\d+$/.test(config.slotId))) {
         console.error('Konfigurasi Google AdSense tidak valid. Periksa clientId dan slotId.');
         return;
     }
@@ -11,6 +11,7 @@
     script.crossOrigin = 'anonymous';
     script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(config.clientId)}`;
     script.onload = () => {
+        if (!config.slotId) return;
         document.querySelectorAll('[data-adsense-slot]').forEach((container) => {
             const ad = document.createElement('ins');
             ad.className = 'adsbygoogle';
