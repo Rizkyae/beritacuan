@@ -6,6 +6,7 @@ Portal berita dan katalog produk digital. Seluruh tampilan publik dan panel admi
 
 ```text
 index.html, berita.html, produk.html, faq.html  Halaman publik statis
+about.html, kebijakan-*.html                    About Us dan kebijakan publik
 admin/*.html                                    Login dan dashboard admin statis
 assets/css/                                     Gaya responsif
 assets/js/site.js                               Navigasi dan footer publik

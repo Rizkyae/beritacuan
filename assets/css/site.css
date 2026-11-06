@@ -4,3 +4,8 @@
 .product-card .button[aria-disabled="true"] { opacity: .7; cursor: not-allowed; }
 .field input[type="file"] { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--text); }
 .ad-slot { min-height: 0; margin-top: 24px; margin-bottom: 24px; }
+.policy-content { max-width: 820px; margin: 0 auto; padding: 18px 0 70px; }
+.policy-content h2 { margin: 32px 0 10px; font: 700 22px "Plus Jakarta Sans",sans-serif; letter-spacing: -.04em; }
+.policy-content p, .policy-content li { color: var(--muted); font-size: 15px; line-height: 1.8; }
+.policy-content ul { padding-left: 22px; }
+.policy-credit { margin-top: 34px; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
