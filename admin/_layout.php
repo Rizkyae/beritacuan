@@ -1,0 +1,8 @@
+<?php
+$adminPage = $adminPage ?? '';
+$adminTitle = $adminTitle ?? 'Dashboard';
+?>
+<!doctype html><html lang="id" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title><?= e($adminTitle) ?> — Admin BERITA CUAN</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="<?= e(url('assets/css/app.css')) ?>"></head><body>
+<div class="admin-layout"><aside class="admin-sidebar"><a class="brand" href="<?= e(url()) ?>"><span class="brand-mark">B<span>.</span></span><span>BERITA <b>CUAN</b></span></a><nav><a class="<?= $adminPage === 'dashboard' ? 'active' : '' ?>" href="<?= e(url('admin/dashboard.php')) ?>">Ringkasan</a><a class="<?= $adminPage === 'posts' ? 'active' : '' ?>" href="<?= e(url('admin/manage-posts.php')) ?>">Berita & Meme</a><a class="<?= $adminPage === 'products' ? 'active' : '' ?>" href="<?= e(url('admin/manage-products.php')) ?>">Produk Digital</a><a class="<?= $adminPage === 'faqs' ? 'active' : '' ?>" href="<?= e(url('admin/manage-faqs.php')) ?>">FAQ</a><a href="<?= e(url()) ?>">← Lihat website</a></nav></aside><main class="admin-main">
+<div class="admin-top"><h1><?= e($adminTitle) ?></h1><form action="<?= e(url('admin/logout.php')) ?>" method="post"><input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>"><button class="button button-dark button-small" type="submit">Keluar</button></form></div>
+<?php if ($flash = take_flash()): ?><div class="alert alert-<?= e($flash['type']) ?>"><?= e($flash['message']) ?></div><?php endif; ?>
