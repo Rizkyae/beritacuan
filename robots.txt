@@ -3,3 +3,4 @@ Allow: /
 Disallow: /admin/
 
 Sitemap: https://www.beritacuan.my.id/sitemap.xml
+Sitemap: https://www.beritacuan.my.id/sitemap.txt
