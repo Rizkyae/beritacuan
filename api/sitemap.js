@@ -55,7 +55,7 @@ module.exports = async function handler(request, response) {
         const urls = staticPages.map((path) => `  <url><loc>${xmlEscape(`${siteUrl}${path}`)}</loc></url>`);
         for (const post of posts) {
             if (typeof post.slug !== 'string' || !post.slug) continue;
-            const articleUrl = `${siteUrl}/berita.html?slug=${encodeURIComponent(post.slug)}`;
+            const articleUrl = `${siteUrl}/berita/${encodeURIComponent(post.slug)}`;
             const lastModified = post.created_at ? `<lastmod>${xmlEscape(new Date(post.created_at).toISOString())}</lastmod>` : '';
             urls.push(`  <url><loc>${xmlEscape(articleUrl)}</loc>${lastModified}</url>`);
         }

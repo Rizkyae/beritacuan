@@ -51,7 +51,7 @@
     const showState = (target, message) => {
         if (target) target.innerHTML = `<div class="empty-state">${escapeHTML(message)}</div>`;
     };
-    const postUrl = (post) => `berita.html?slug=${encodeURIComponent(post.slug || '')}`;
+    const postUrl = (post) => `/berita/${encodeURIComponent(post.slug || '')}`;
     const setMeta = (selector, attribute, value) => {
         let element = document.head.querySelector(selector);
         if (!element) {
@@ -191,7 +191,16 @@
 
     async function initNews() {
         const params = new URLSearchParams(window.location.search);
-        const slug = params.get('slug') || '';
+        const pathMatch = window.location.pathname.match(/^\/berita\/([^/]+)\/?$/);
+        let pathSlug = '';
+        if (pathMatch) {
+            try {
+                pathSlug = decodeURIComponent(pathMatch[1]);
+            } catch {
+                pathSlug = '';
+            }
+        }
+        const slug = params.get('slug') || pathSlug;
         const category = params.get('kategori') || '';
         const search = params.get('q') || '';
         const article = document.querySelector('[data-article]');

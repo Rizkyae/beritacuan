@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/berita/:slug",
+      "destination": "/berita.html?slug=:slug"
+    },
+    {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
     }
