@@ -32,6 +32,8 @@ Menjalankan `schema.sql` juga membuat bucket publik `berita-cuan` dan kebijakan 
 - Tambahkan properti domain di Google Search Console, verifikasi kepemilikan, lalu kirim `https://www.beritacuan.my.id/sitemap.xml` satu kali. Sitemap dinamis memperkenalkan artikel baru saat Google mengambilnya lagi; Google menentukan jadwal crawl dan tidak menjamin setiap halaman diindeks, jadi pengindeksan tidak perlu diminta manual untuk setiap berita tetapi juga tidak langsung/terjamin.
 - Untuk menayangkan iklan, terima situs di Google AdSense lalu isi `clientId` (`ca-pub-...`) dan `slotId` (ID unit iklan) di `assets/js/supabase.js`. Iklan tidak dimuat sebelum kedua ID valid. Penayangan tetap bergantung pada persetujuan Google dan kebijakan AdSense.
 
+Market Watch halaman utama menampilkan BTC dan ETH melalui Binance Spot WebSocket dalam USDT; harga diperbarui saat data stream diterima dan koneksi mencoba tersambung kembali otomatis jika terputus. Ini adalah harga pada Binance, bukan harga konsolidasi seluruh bursa atau nasihat investasi.
+
 Anon/publishable key memang digunakan di browser. Jangan pernah mengisi `service_role` key; akses publik dibatasi oleh Row Level Security pada `schema.sql`.
 
 ## Panel admin (opsional)
